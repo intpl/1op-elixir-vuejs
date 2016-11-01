@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+    <logo></logo>
+    <entrance v-if="!authorized"></entrance>
+    <chat v-if="authorized"></chat>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Logo from './components/Logo'
+import Entrance from './components/Entrance'
+import Chat from './components/Chat'
+import { mapState } from 'vuex'
 
 export default {
   name: 'app',
-  components: {
-    Hello
-  }
+  components: { Entrance, Logo, Chat },
+  computed: mapState(['authorized'])
 }
 </script>
 
