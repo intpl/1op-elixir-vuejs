@@ -7,12 +7,11 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'entrance',
-  computed: mapState(['password']),
-  methods: mapMutations(['APPLY_PASSWORD'])
+  methods: mapActions(['APPLY_PASSWORD'])
 }
 </script>
 

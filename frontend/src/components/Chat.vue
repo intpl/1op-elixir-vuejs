@@ -5,8 +5,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  name: 'chat'
+  name: 'chat',
+  computed: mapState(['password'])
 }
 </script>
 
