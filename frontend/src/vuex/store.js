@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
+import { roomIdFromHref, roomIdToHref } from '../helpers'
 
 Vue.use(VueResource)
 Vue.use(Vuex)
@@ -8,13 +9,15 @@ Vue.use(Vuex)
 const state = {
   password: '',
   authorized: false,
+  room_id: roomIdFromHref(),
   messages: []
 }
 
 const mutations = {
-  APPLY_PASSWORD (state, password) {
+  SAVE_CREDENTIALS (state, data) {
     state.authorized = true
-    state.password = password
+    state.room_id = data.room_id
+    state.password = data.password
   },
 
   INVALID_PASSWORD (_) {
@@ -23,10 +26,11 @@ const mutations = {
 }
 
 const actions = {
-  REQUEST_PASSWORD_VERIFICATION ({commit}, password) {
+  REQUEST_PASSWORD_VERIFICATION ({commit}, data) {
     Vue.http.get('http://localhost:4000/ping').then((response) => {
       if (response.body === 'pong') {
-        commit('APPLY_PASSWORD', password)
+        roomIdToHref(data.room_id)
+        commit('SAVE_CREDENTIALS', data)
       } else {
         commit('INVALID_PASSWORD')
       }
@@ -35,8 +39,11 @@ const actions = {
     })
   },
 
-  async APPLY_PASSWORD ({dispatch, commit}, password) {
-    await dispatch('REQUEST_PASSWORD_VERIFICATION', password)
+  async SUBMIT_ENTRANCE_REQUEST ({dispatch, _commit}, form) {
+    await dispatch('REQUEST_PASSWORD_VERIFICATION', {
+      room_id: (form.roomIdField || {}).value || roomIdFromHref(),
+      password: form.passwordField.value
+    })
   }
 }
 
