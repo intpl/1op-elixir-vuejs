@@ -24,21 +24,42 @@ const mutations = {
 
   INVALID_PASSWORD (_) {
     window.alert('invalid password')
+  },
+
+  SAVE_CHANNEL (state, channel) {
+    state.channel = channel
+  },
+
+  RECEIVE_MESSAGE (state, message) {
+    state.messages.push(message.body)
   }
 }
 
 const actions = {
-  REQUEST_PASSWORD_VERIFICATION ({commit}, data) {
-    Vue.http.get('http://localhost:4000/ping').then((response) => {
-      if (response.body === 'pong') {
-        roomIdToHref(data.room_id)
-        commit('SAVE_CREDENTIALS', data)
-      } else {
-        commit('INVALID_PASSWORD')
-      }
-    }, (response) => {
-      window.alert('server error. is it running?')
-    })
+  REQUEST_PASSWORD_VERIFICATION ({dispatch, commit}, data) {
+    const socket = new Socket('ws://localhost:4000/socket')
+    socket.connect()
+
+    const channel = socket.channel(
+      'room:' + data.room_id,
+      {params: {sha512: sha512(data.password)}}
+    )
+
+    // TODO: what if password is wrong or the server isn't running? :)
+    syncHrefWithRoomId(data.room_id)
+
+    commit('SAVE_CREDENTIALS', data)
+    commit('SAVE_CHANNEL', channel)
+    dispatch('HOOK_CHANNEL', channel)
+  },
+
+  HOOK_CHANNEL ({commit}, channel) {
+    channel.on('new_msg', payload => commit('RECEIVE_MESSAGE', payload))
+    channel.join()
+  },
+
+  SEND_MESSAGE ({state, commit}, message) {
+    state.channel.push('new_msg', {body: message})
   },
 
   async SUBMIT_ENTRANCE_REQUEST ({dispatch, _commit}, form) {
