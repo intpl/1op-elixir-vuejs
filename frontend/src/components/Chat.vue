@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <h1>you are in :)</h1>
+    <h3>you are in :)</h3>
 		<ul>
 			<li v-for="message in messages">
 				{{ message }}
@@ -19,8 +19,10 @@ export default {
   computed: mapState(['messages']),
   methods: {
     ...mapActions(['SEND_MESSAGE']),
+
     sendMessage () {
       this.SEND_MESSAGE(this.newMessage)
+      this.newMessage = ''
     }
   }
 }
