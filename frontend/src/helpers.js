@@ -4,7 +4,7 @@ export function roomIdFromHref () {
   return regexArr ? regexArr[1] : null
 }
 
-export function roomIdToHref (roomId) {
+export function syncHrefWithRoomId (roomId) {
   if (roomId !== roomIdFromHref()) {
     window.location.hash = roomId
   }
