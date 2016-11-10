@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
 import { roomIdFromHref, roomIdToHref } from '../helpers'
+import { Socket } from '../phoenix.js'
 
 Vue.use(VueResource)
 Vue.use(Vuex)
