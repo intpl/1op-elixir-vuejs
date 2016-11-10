@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
 import { roomIdFromHref, roomIdToHref } from '../helpers'
+import sha512 from 'js-sha512'
 import { Socket } from '../phoenix.js'
 
 Vue.use(VueResource)
