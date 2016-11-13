@@ -1,5 +1,6 @@
 defmodule Backend.UserSocket do
   use Phoenix.Socket
+  alias Backend.Presence
 
   ## Channels
   channel "room:*", Backend.RoomChannel
