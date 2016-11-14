@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
+import { JSEncrypt } from 'jsencrypt'
+
 import { roomIdFromHref,
   openSocket,
   prepareChannel } from '../helpers'
@@ -37,16 +39,23 @@ const mutations = {
     state.channel = channel
   },
 
+  SAVE_RSA (state, rsa) {
+    state.rsa = rsa
+  },
+
   RECEIVE_MESSAGE (state, message) {
-    state.messages.push(message.body)
-  }
-}
+    state.messages.push(
+      state.rsa.decrypt(message.body)
+    )
+  }}
 
 const actions = {
   REQUEST_PASSWORD_VERIFICATION ({dispatch, commit}, data) {
     const socket = openSocket()
     socket.onClose(() => commit('DISCONNECTED'))
     socket.onOpen(() => {
+      dispatch('GENERATE_RSA')
+
       const channel = prepareChannel(socket, data.room_id, data.password)
       channel.join().receive('ok', () => {
         commit('REMOVE_ERROR')
@@ -57,6 +66,10 @@ const actions = {
         dispatch('SYNC_HREF_WITH_ROOM_ID')
       })
     })
+  },
+
+  GENERATE_RSA ({commit}) {
+    commit('SAVE_RSA', new JSEncrypt({default_key_size: 1024}))
   },
 
   HOOK_CHANNEL ({commit}, channel) {
@@ -70,10 +83,11 @@ const actions = {
   },
 
   SEND_MESSAGE ({state, commit}, message) {
-    state.channel.push('new_msg', {body: message})
+    const encryptedMessage = state.rsa.encrypt(message)
+    state.channel.push('new_msg', {body: encryptedMessage})
   },
 
-  async SUBMIT_ENTRANCE_REQUEST ({dispatch, _commit}, form) {
+  async SUBMIT_ENTRANCE_REQUEST ({dispatch}, form) {
     await dispatch('REQUEST_PASSWORD_VERIFICATION', {
       room_id: (form.roomIdField || {}).value || roomIdFromHref(),
       password: form.passwordField.value
