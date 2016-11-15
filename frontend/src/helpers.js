@@ -13,9 +13,12 @@ export function openSocket () {
   return socket
 }
 
-export function prepareChannel (socket, roomId, password) {
+export function prepareChannel (socket, roomId, password, rsa) {
   return socket.channel(
-    'room:' + roomId,
-    {params: {sha512: sha512(password)}}
+    'room:' + roomId, {
+      params: {
+        sha512: sha512(password),
+        rsa_pub: rsa.getPublicKeyB64()
+      }}
   )
 }

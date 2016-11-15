@@ -54,9 +54,16 @@ const actions = {
     const socket = openSocket()
     socket.onClose(() => commit('DISCONNECTED'))
     socket.onOpen(() => {
-      dispatch('GENERATE_RSA')
+      const rsa = new JSEncrypt({default_key_size: 1024})
+      commit('SAVE_RSA', rsa)
 
-      const channel = prepareChannel(socket, data.room_id, data.password)
+      const channel = prepareChannel(
+        socket,
+        data.room_id,
+        data.password,
+        rsa
+      )
+
       channel.join().receive('ok', () => {
         commit('REMOVE_ERROR')
         commit('SAVE_CREDENTIALS', data)
@@ -66,10 +73,6 @@ const actions = {
         dispatch('SYNC_HREF_WITH_ROOM_ID')
       })
     })
-  },
-
-  GENERATE_RSA ({commit}) {
-    commit('SAVE_RSA', new JSEncrypt({default_key_size: 1024}))
   },
 
   HOOK_CHANNEL ({commit}, channel) {

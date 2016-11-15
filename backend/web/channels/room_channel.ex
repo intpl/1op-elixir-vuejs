@@ -2,16 +2,19 @@ defmodule Backend.RoomChannel do
   use Backend.Web, :channel
   alias Backend.Presence
 
-  def join(room_id, %{"params" => %{"sha512" => sha512}}, socket) do
-    ets_lookup(room_id) |> verify_room(room_id, sha512) |> prepare_response(room_id, socket, self)
+  def join(room_id, %{"params" => %{"sha512" => sha512, "rsa_pub" => rsa_pub}}, socket) do
+    room_id
+      |> ets_lookup
+      |> verify_room(room_id, sha512)
+      |> handle_response(room_id, rsa_pub, socket, self)
   end
 
-  def handle_info({:after_join, user_id}, socket) do
+  def handle_info({:after_join, room_id, rsa_pub}, socket) do
     push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(
-                              socket,
-                              socket.id,
-                              %{user_id: user_id})
+    {:ok, _} = Presence.track( socket, socket.id, %{
+                                user_id: generate_user_id(room_id),
+                                rsa_pub: rsa_pub
+                              })
     {:noreply, socket}
   end
 
@@ -39,12 +42,12 @@ defmodule Backend.RoomChannel do
 
   defp verify_room(_, _, _), do: :error
 
-  defp prepare_response(:ok, room_id, socket, that) do
-    send that, {:after_join, generate_user_id(room_id)}
+  defp handle_response(:ok, room_id, rsa_pub, socket, that) do
+    send that, {:after_join, room_id, rsa_pub}
     {:ok, socket}
   end
 
-  defp prepare_response(:error, _, _, _) do
+  defp handle_response(:error, _, _, _, _) do
     {:error, %{ reason: "invalid password" }}
   end
 end
