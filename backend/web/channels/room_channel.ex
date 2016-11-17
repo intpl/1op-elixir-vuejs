@@ -2,6 +2,8 @@ defmodule Backend.RoomChannel do
   use Backend.Web, :channel
   alias Backend.Presence
 
+  intercept ["new_msg"]
+
   def join(room_id, %{"params" => %{"sha512" => sha512, "rsa_pub" => rsa_pub}}, socket) do
     room_id
       |> ets_lookup
@@ -9,28 +11,33 @@ defmodule Backend.RoomChannel do
       |> handle_response(room_id, rsa_pub, socket, self)
   end
 
-  def terminate(reason, socket) do
+  def terminate(_reason, socket) do
     :ok = handle_leaving(socket.topic, Presence.list(socket))
 
     {:ok, socket}
   end
 
   def handle_info({:after_join, room_id, rsa_pub}, socket) do
+    socket = assign(socket, :user_id, generate_user_id(room_id))
     push socket, "presence_state", Presence.list(socket)
+
     {:ok, _} = Presence.track( socket, socket.id, %{
-                                user_id: generate_user_id(room_id),
+                                user_id: socket.assigns[:user_id],
                                 rsa_pub: rsa_pub
                               })
     {:noreply, socket}
   end
 
-	def handle_in("new_msg", %{"body" => body}, socket) do
-    broadcast! socket, "new_msg", %{body: body}
+	def handle_in("new_msg", body, socket) do
+    broadcast! socket, "new_msg", body
     {:noreply, socket}
   end
 
-  def handle_out("new_msg", payload, socket) do
-    push socket, "new_msg", payload
+  def handle_out("new_msg", %{"body" => payload}, socket) do
+    user_id = socket.assigns[:user_id]
+
+    [ _ | message ]= Enum.find(payload, fn([user | _]) -> user == user_id end)
+    push socket, "new_msg", %{body: message}
     {:noreply, socket}
   end
 
@@ -60,7 +67,7 @@ defmodule Backend.RoomChannel do
   defp handle_leaving(room_id, %{}) do
     case ets_lookup(room_id) do
       [{_, _}] -> :ets.delete(:chatrooms, room_id)
-      [] -> # do nothing?
+      [] -> :ok
     end
 
     :ok

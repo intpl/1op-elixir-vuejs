@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import { JSEncrypt } from 'jsencrypt'
 import { Presence } from '../phoenix'
 
-var AES = require('crypto-js/aes') // TODO: any ES6 way to do this?
+var CryptoJS = require('crypto-js') // TODO: any ES6 way to do this?
 
 import { roomIdFromHref,
   openSocket,
@@ -49,8 +49,10 @@ const mutations = {
   },
 
   RECEIVE_MESSAGE (state, message) {
+    // console.log(message.body[0])
+
     state.messages.push(
-      state.rsa.decrypt(message.body)
+      state.rsa.decrypt(message.body[0])
     )
   },
 
@@ -62,7 +64,9 @@ const mutations = {
     state.users = users.map((el) => {
       return {
         user_id: el.user_id,
-        rsa_pub: AES.decrypt(el.rsa_pub, state.password).toString()
+        rsa_pub: CryptoJS.AES.decrypt(
+          el.rsa_pub, state.password
+        ).toString(CryptoJS.enc.Utf8)
       }
     })
   }
@@ -76,7 +80,8 @@ const actions = {
       const rsa = new JSEncrypt({default_key_size: 1024})
       commit('SAVE_RSA', rsa)
 
-      const encryptedRsaPub = AES.encrypt(rsa.getPublicKey(), data.password).toString()
+      const encryptedRsaPub = CryptoJS.AES.encrypt(rsa.getPublicKey(), data.password).toString()
+
       const channel = prepareChannel({
         socket,
         encryptedRsaPub: encryptedRsaPub,
@@ -121,8 +126,17 @@ const actions = {
   },
 
   SEND_MESSAGE ({state, commit}, message) {
-    const encryptedMessage = state.rsa.encrypt(message)
-    state.channel.push('new_msg', {body: encryptedMessage})
+    const encMessage = state.users.map((user) => {
+      let encrypt = new JSEncrypt()
+      encrypt.setPublicKey(user.rsa_pub)
+
+      return [
+        user.user_id,
+        encrypt.encrypt(message)
+      ]
+    })
+
+    state.channel.push('new_msg', {body: encMessage})
   },
 
   async SUBMIT_ENTRANCE_REQUEST ({dispatch}, form) {
