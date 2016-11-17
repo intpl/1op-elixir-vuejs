@@ -9,6 +9,12 @@ defmodule Backend.RoomChannel do
       |> handle_response(room_id, rsa_pub, socket, self)
   end
 
+  def terminate(reason, socket) do
+    :ok = handle_leaving(socket.topic, Presence.list(socket))
+
+    {:ok, socket}
+  end
+
   def handle_info({:after_join, room_id, rsa_pub}, socket) do
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track( socket, socket.id, %{
@@ -50,4 +56,14 @@ defmodule Backend.RoomChannel do
   defp handle_response(:error, _, _, _, _) do
     {:error, %{ reason: "invalid password" }}
   end
+
+  defp handle_leaving(room_id, %{}) do
+    case ets_lookup(room_id) do
+      [{_, _}] -> :ets.delete(:chatrooms, room_id)
+    end
+
+    :ok
+  end
+
+  defp handle_leaving(_, _), do: :ok # lol
 end
