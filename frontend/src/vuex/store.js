@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
 import { JSEncrypt } from 'jsencrypt'
+import { Presence } from '../phoenix'
 
 var AES = require('crypto-js/aes') // TODO: any ES6 way to do this?
 
@@ -17,7 +18,9 @@ const state = {
   error: '',
   authorized: false,
   room_id: roomIdFromHref(),
-  messages: []
+  messages: [],
+  users: [],
+  presence: {}
 }
 
 const mutations = {
@@ -49,7 +52,21 @@ const mutations = {
     state.messages.push(
       state.rsa.decrypt(message.body)
     )
-  }}
+  },
+
+  UPDATE_PRESENCE (state, presence) {
+    state.presence = presence
+  },
+
+  UPDATE_USERS (state, users) {
+    state.users = users.map((el) => {
+      return {
+        user_id: el.user_id,
+        rsa_pub: AES.decrypt(el.rsa_pub, state.password).toString()
+      }
+    })
+  }
+}
 
 const actions = {
   REQUEST_ENTRANCE ({dispatch, commit}, data) {
@@ -78,8 +95,23 @@ const actions = {
     })
   },
 
-  HOOK_CHANNEL ({commit}, channel) {
+  HOOK_CHANNEL ({state, dispatch, commit}, channel) {
     channel.on('new_msg', payload => commit('RECEIVE_MESSAGE', payload))
+
+    channel.on('presence_state', initial => {
+      dispatch('UPDATE_PRESENCE', Presence.syncState(state.presence, initial))
+    })
+
+    channel.on('presence_diff', diff => {
+      dispatch('UPDATE_PRESENCE', Presence.syncDiff(state.presence, diff))
+    })
+  },
+
+  UPDATE_PRESENCE ({commit}, presence) {
+    commit('UPDATE_PRESENCE', presence)
+    if ((presence[''] || {}).metas) {
+      commit('UPDATE_USERS', presence[''].metas)
+    }
   },
 
   SYNC_HREF_WITH_ROOM_ID ({state}) {

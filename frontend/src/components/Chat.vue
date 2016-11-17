@@ -1,6 +1,12 @@
 <template>
   <div class="chat">
     <h3>you are in :)</h3>
+		<ol>
+      online:
+			<li v-for="u in users">
+				{{ u.user_id }}
+			</li>
+		</ol>
 		<ul>
 			<li v-for="message in messages">
 				{{ message }}
@@ -16,7 +22,11 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'chat',
   data () { return { newMessage: '' } },
-  computed: mapState(['messages']),
+  computed: mapState({
+    messages: 'messages',
+    users: 'users'
+  }),
+
   methods: {
     ...mapActions(['SEND_MESSAGE']),
 

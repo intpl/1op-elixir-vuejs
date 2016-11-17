@@ -60,6 +60,7 @@ defmodule Backend.RoomChannel do
   defp handle_leaving(room_id, %{}) do
     case ets_lookup(room_id) do
       [{_, _}] -> :ets.delete(:chatrooms, room_id)
+      [] -> # do nothing?
     end
 
     :ok
