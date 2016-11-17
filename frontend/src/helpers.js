@@ -13,12 +13,12 @@ export function openSocket () {
   return socket
 }
 
-export function prepareChannel (socket, roomId, password, rsa) {
+export function prepareChannel ({socket, roomId, password, encryptedRsaPub}) {
   return socket.channel(
     'room:' + roomId, {
       params: {
         sha512: sha512(password),
-        rsa_pub: rsa.getPublicKeyB64()
+        rsa_pub: encryptedRsaPub
       }}
   )
 }

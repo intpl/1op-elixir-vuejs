@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import VueResource from 'vue-resource'
 import { JSEncrypt } from 'jsencrypt'
 
+var AES = require('crypto-js/aes') // TODO: any ES6 way to do this?
+
 import { roomIdFromHref,
   openSocket,
   prepareChannel } from '../helpers'
@@ -50,19 +52,20 @@ const mutations = {
   }}
 
 const actions = {
-  REQUEST_PASSWORD_VERIFICATION ({dispatch, commit}, data) {
+  REQUEST_ENTRANCE ({dispatch, commit}, data) {
     const socket = openSocket()
     socket.onClose(() => commit('DISCONNECTED'))
     socket.onOpen(() => {
       const rsa = new JSEncrypt({default_key_size: 1024})
       commit('SAVE_RSA', rsa)
 
-      const channel = prepareChannel(
+      const encryptedRsaPub = AES.encrypt(rsa.getPublicKey(), data.password).toString()
+      const channel = prepareChannel({
         socket,
-        data.room_id,
-        data.password,
-        rsa
-      )
+        encryptedRsaPub: encryptedRsaPub,
+        roomId: data.room_id,
+        password: data.password
+      })
 
       channel.join().receive('ok', () => {
         commit('REMOVE_ERROR')
@@ -91,7 +94,7 @@ const actions = {
   },
 
   async SUBMIT_ENTRANCE_REQUEST ({dispatch}, form) {
-    await dispatch('REQUEST_PASSWORD_VERIFICATION', {
+    await dispatch('REQUEST_ENTRANCE', {
       room_id: (form.roomIdField || {}).value || roomIdFromHref(),
       password: form.passwordField.value
     })
