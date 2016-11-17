@@ -49,8 +49,6 @@ const mutations = {
   },
 
   RECEIVE_MESSAGE (state, message) {
-    // console.log(message.body[0])
-
     state.messages.push(
       state.rsa.decrypt(message.body[0])
     )
