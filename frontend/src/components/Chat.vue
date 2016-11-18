@@ -1,18 +1,30 @@
 <template>
-  <div class="chat">
-    <h3>you are in :)</h3>
-		<ol>
-      online:
-			<li v-for="u in users">
-				{{ u.user_id }}
-			</li>
-		</ol>
-		<ul>
-			<li v-for="message in messages">
-				{{ message }}
-			</li>
-		</ul>
-  <input type="text" v-model="newMessage" v-on:keyup.13="sendMessage">
+  <div>
+    <div class="row chat">
+      <div class="column column-70">
+        <blockquote v-for="message in messages">
+          <em>{{ message }}</em>
+        </blockquote>
+      </div>
+    </div>
+
+    <div class="container footer">
+      <div class="row">
+        <div class="column column-100">
+
+          online:
+          <b v-for="u in users"> {{ u.user_id }} </b>
+
+          <input
+            autofocus
+            placeholder="(max 117 characters)"
+            type="text"
+            v-model="newMessage"
+            v-on:keyup.13="sendMessage" />
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,4 +50,25 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.input {
+  clear: both;
+  position: relative;
+  z-index: 10;
+  height: 3em;
+  margin-top: -3em;
+}
+
+html, body {
+  height: 100%
+}
+
+.chat {
+  padding-bottom: 200px;
+}
+
+.footer{
+    position: fixed;
+    bottom: 0;
+}
+</style>

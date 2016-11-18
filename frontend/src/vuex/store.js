@@ -52,6 +52,9 @@ const mutations = {
     state.messages.push(
       state.rsa.decrypt(message.body[0])
     )
+
+    // aAaAA this shouldn't be in a commit! SORRY! :<<<
+    document.body.scrollTop = document.body.scrollHeight - 200
   },
 
   UPDATE_PRESENCE (state, presence) {

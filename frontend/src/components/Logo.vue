@@ -1,6 +1,5 @@
 <template>
   <header>
-    <h4>1op :)</h4>
     <div v-if="error">{{ error }}</div>
   </header>
 </template>
