@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div v-if="error">{{ error }}</div>
+    <div class="error" v-if="error">{{ error }}</div>
   </header>
 </template>
 
@@ -13,4 +13,8 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+.error {
+  color: red
+}
+</style>
