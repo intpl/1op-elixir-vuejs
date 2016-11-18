@@ -49,9 +49,13 @@ const mutations = {
   },
 
   RECEIVE_MESSAGE (state, message) {
-    state.messages.push(
-      state.rsa.decrypt(message.body[0])
-    )
+    console.log(message)
+
+    state.messages.push({
+      user_id: message.body[0],
+      body: state.rsa.decrypt(message.body[1]),
+      date: new Date()
+    })
 
     // aAaAA this shouldn't be in a commit! SORRY! :<<<
     document.body.scrollTop = document.body.scrollHeight - 200

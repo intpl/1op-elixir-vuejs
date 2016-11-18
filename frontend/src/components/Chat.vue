@@ -3,7 +3,9 @@
     <div class="row chat">
       <div class="column column-70">
         <blockquote v-for="message in messages">
-          <em>{{ message }}</em>
+          {{ message.date.getHours() }}:{{ message.date.getMinutes()}}
+          <b>{{ message.user_id }}</b>:
+          <em>{{ message.body }}</em>
         </blockquote>
       </div>
     </div>

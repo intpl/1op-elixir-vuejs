@@ -28,17 +28,19 @@ defmodule Backend.RoomChannel do
     {:noreply, socket}
   end
 
-	def handle_in("new_msg", body, socket) do
-    broadcast! socket, "new_msg", body
+	def handle_in("new_msg", %{"body" => body}, socket) do
+    broadcast! socket, "new_msg",
+      %{body: body, sender_id: socket.assigns[:user_id]}
+
     {:noreply, socket}
   end
 
-  def handle_out("new_msg", %{"body" => body}, socket) do
+  def handle_out("new_msg", %{body: body, sender_id: sender_id}, socket) do
     user_id = socket.assigns[:user_id]
 
-    [ _ | message ] = Enum.find(body, fn([user | _]) -> user == user_id end)
+    [ _ | [ message ] ] = Enum.find(body, fn([user | _]) -> user == user_id end)
 
-    push socket, "new_msg", %{body: message}
+    push socket, "new_msg", %{body: [sender_id, message]}
     {:noreply, socket}
   end
 
