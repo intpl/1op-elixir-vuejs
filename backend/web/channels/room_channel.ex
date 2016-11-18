@@ -33,10 +33,11 @@ defmodule Backend.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_out("new_msg", %{"body" => payload}, socket) do
+  def handle_out("new_msg", %{"body" => body}, socket) do
     user_id = socket.assigns[:user_id]
 
-    [ _ | message ]= Enum.find(payload, fn([user | _]) -> user == user_id end)
+    [ _ | message ] = Enum.find(body, fn([user | _]) -> user == user_id end)
+
     push socket, "new_msg", %{body: message}
     {:noreply, socket}
   end
