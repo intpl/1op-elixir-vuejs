@@ -41,7 +41,7 @@
     <ol>
       <li>No one inbetween our computers can read our messages in real-time (which would be impossible without signing asymmetrical key-pair or trusting a middleman)</li>
 
-      <li>No one can ever decrypt our messages in future, even when they have all our web-traffic secured and know our initial passphrase (thanks to asymmetrical encryption)</li>
+      <li>No one can ever decrypt our messages in the future, even when they have all our web-traffic secured and know our initial passphrase (thanks to asymmetrical encryption)</li>
     </ol>
 
     <h5>Whoa! How exactly does it work?</h5>
