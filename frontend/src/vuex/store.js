@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import { JSEncrypt } from 'jsencrypt'
 import { Presence } from '../phoenix'
 
-var CryptoJS = require('crypto-js') // TODO: any ES6 way to do this?
+import { AES, enc as CryptoEnc } from 'crypto-js'
 
 import { roomIdFromHref,
   openSocket,
@@ -69,9 +69,9 @@ const mutations = {
     state.users = users.map((el) => {
       return {
         user_id: el.user_id,
-        rsa_pub: CryptoJS.AES.decrypt(
+        rsa_pub: AES.decrypt(
           el.rsa_pub, state.password
-        ).toString(CryptoJS.enc.Utf8)
+        ).toString(CryptoEnc.Utf8)
       }
     })
   }
@@ -85,7 +85,7 @@ const actions = {
       const rsa = new JSEncrypt({default_key_size: 1024})
       commit('SAVE_RSA', rsa)
 
-      const encryptedRsaPub = CryptoJS.AES.encrypt(rsa.getPublicKey(), data.password).toString()
+      const encryptedRsaPub = AES.encrypt(rsa.getPublicKey(), data.password).toString()
 
       const channel = prepareChannel({
         socket,

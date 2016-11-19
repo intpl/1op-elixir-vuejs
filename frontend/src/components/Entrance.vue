@@ -18,13 +18,17 @@
         </div>
       </div>
     </form>
+    <h4>How to use this app?</h4>
+    <p>
+    You just send a link and a password to a friend. You don't have to set up a chatroom before sending the link, so just write <em>1op.eu/asdasdasds</em> and send it right away. If both of you have the same password, you will get connected and no one will ever see what you have been talking about.
+    </p>
     <h4>What the hell is this place?</h4>
     <p>
       1op is an encrypted chat application, where I try to solve couple of trust-related problems when it comes to current instant chat apps. Let's dive deeper into how this idea is structured...
     </p>
     <h5>Alright, so what's the big deal?</h5>
     <p>
-      We can pretty much encrypt stuff using either symmetric or asymmetric algorithms. With symmetric encryption we only need key passphrase to encrypt/decrypt a message. It's all more complicated when it comes to asymmetric encryption algorithm, where we have a Private and a Public key. Using a Private key we can encrypt a message, which can be decrypted using only the Public one, and vice-versa (Public-key-encrypted messages can be decrypted using only the Private key). That's pretty much how the Internet identity trust is built. We trust that Google is Google, because it's identity is encrypted using some Key-Authority's Private Key (which is securely stored somewhere far away) and we all have it's Public key stored on our computers. We could use the same solution in instant messaging in order to indispose seeing our messages for everybody inbetween our computers (the Internet is huge after all).
+      We can pretty much encrypt stuff using either symmetric or asymmetric algorithms. With symmetric encryption we only need key passphrase to encrypt/decrypt a message. It's all more complicated when it comes to asymmetric encryption algorithms, where we have a Private and a Public key. Using a Private key we can encrypt a message, which can be decrypted using only the Public one, and vice-versa (Public-key-encrypted messages can be decrypted using only the Private key). That's pretty much how the Internet identity trust is built. We trust that Google is Google, because it's identity is encrypted using some Key-Authority's Private Key (which is securely stored somewhere far away) and we all have it's Public key stored on our computers. We could use the same solution in instant messaging in order to indispose seeing our messages for everybody inbetween our computers (the Internet is huge after all).
     </p>
     <p>... but why shouldn't we?</p>
     <p>
