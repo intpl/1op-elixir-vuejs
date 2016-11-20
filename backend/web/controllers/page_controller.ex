@@ -1,7 +1,7 @@
 defmodule Backend.PageController do
   use Phoenix.Controller
 
-  def ping(conn, _params) do
-    text conn, "pong"
+  def red(conn, _params) do
+    redirect conn, external: Application.get_env(:backend, :frontend_host)
   end
 end

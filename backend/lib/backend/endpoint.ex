@@ -36,7 +36,5 @@ defmodule Backend.Endpoint do
     key: "_backend_key",
     signing_salt: "+i4tWl/F"
 
-  plug CORSPlug # FIXME
-
   plug Backend.Router
 end
