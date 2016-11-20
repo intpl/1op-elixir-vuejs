@@ -80,7 +80,7 @@ const actions = {
     const socket = openSocket()
     socket.onClose(() => commit('DISCONNECTED'))
     socket.onOpen(() => {
-      const rsa = new JSEncrypt({default_key_size: 1024})
+      const rsa = new JSEncrypt({default_key_size: 2048})
       commit('SAVE_RSA', rsa)
 
       const encryptedRsaPub = AES.encrypt(rsa.getPublicKey(), data.password).toString()
