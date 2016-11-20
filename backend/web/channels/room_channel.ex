@@ -17,8 +17,8 @@ defmodule Backend.RoomChannel do
     {:ok, socket}
   end
 
-  def handle_info({:after_join, room_id, rsa_pub}, socket) do
-    socket = assign(socket, :user_id, generate_user_id(room_id))
+  def handle_info({:after_join, _, rsa_pub}, socket) do
+    socket = assign(socket, :user_id, generate_user_id)
     push socket, "presence_state", Presence.list(socket)
 
     {:ok, _} = Presence.track( socket, socket.id, %{
@@ -44,9 +44,9 @@ defmodule Backend.RoomChannel do
     {:noreply, socket}
   end
 
-  defp generate_user_id(room_id), do: "user_" <> Integer.to_string count_user_id(Presence.list(room_id))
-  defp count_user_id(%{"" => %{ metas: arr }}), do: Enum.count arr
-  defp count_user_id(%{}), do: 0
+  defp generate_user_id do
+    "user_" <> (:crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5))
+  end
 
   defp ets_lookup(room_id), do: :ets.lookup(:chatrooms, room_id)
 
