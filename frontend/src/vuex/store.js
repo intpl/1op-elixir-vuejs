@@ -17,6 +17,7 @@ const state = {
   password: '',
   error: '',
   authorized: false,
+  submitEntranceAllow: true,
   room_id: roomIdFromHref(),
   messages: [],
   users: [],
@@ -34,8 +35,8 @@ const mutations = {
     state.error = ''
   },
 
-  DISCONNECTED (state) {
-    state.error = 'something went wrong...'
+  DISCONNECTED (state, reason = 'something went wrong...') {
+    state.error = reason
     state.authorized = false
     state.password = ''
   },
@@ -72,13 +73,25 @@ const mutations = {
         ).toString(CryptoEnc.Utf8)
       }
     })
+  },
+
+  ALLOW_SUBMIT_ENTRANCE (state) {
+    state.submitEntranceAllow = true
+  },
+
+  BLOCK_SUBMIT_ENTRANCE (state) {
+    state.submitEntranceAllow = false
   }
 }
 
 const actions = {
   REQUEST_ENTRANCE ({dispatch, commit}, data) {
     const socket = openSocket()
-    socket.onClose(() => commit('DISCONNECTED'))
+    socket.onError(() => {
+      commit('DISCONNECTED')
+      commit('ALLOW_SUBMIT_ENTRANCE')
+    })
+
     socket.onOpen(() => {
       const rsa = new JSEncrypt({default_key_size: 2048})
       commit('SAVE_RSA', rsa)
@@ -94,11 +107,15 @@ const actions = {
 
       channel.join().receive('ok', () => {
         commit('REMOVE_ERROR')
+        commit('ALLOW_SUBMIT_ENTRANCE')
         commit('SAVE_CREDENTIALS', data)
         commit('SAVE_CHANNEL', channel)
 
         dispatch('HOOK_CHANNEL', channel)
         dispatch('SYNC_HREF_WITH_ROOM_ID')
+      }).receive('error', (res) => {
+        commit('DISCONNECTED', res['reason'])
+        commit('ALLOW_SUBMIT_ENTRANCE')
       })
     })
   },
@@ -142,7 +159,9 @@ const actions = {
     state.channel.push('new_msg', {body: encMessage})
   },
 
-  async SUBMIT_ENTRANCE_REQUEST ({dispatch}, form) {
+  async SUBMIT_ENTRANCE_REQUEST ({dispatch, commit}, form) {
+    commit('BLOCK_SUBMIT_ENTRANCE')
+
     await dispatch('REQUEST_ENTRANCE', {
       room_id: (form.roomIdField || {}).value || roomIdFromHref(),
       password: form.passwordField.value

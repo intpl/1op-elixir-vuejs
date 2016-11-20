@@ -1,13 +1,26 @@
 <template>
   <div>
     <div class="row chat">
-      <div class="column column-70">
+      <div v-if="messages.length > 0" class="column column-70">
         <blockquote v-for="message in messages">
           {{ message.date.getHours() }}:{{ message.date.getMinutes()}}
           <b>{{ message.user_id }}</b>:
           <em>{{ message.body }}</em>
         </blockquote>
       </div>
+      <div v-else>
+        <br>
+        <br>
+        <br>
+        Write something! Don't be shy!
+        <br>
+        <div v-if="users.length == 1">
+          ... and invite somebody, maybe? :)
+        </div>
+        <div v-else>
+          <b>Oh! Somebody is here!</b> Write something!
+        </div>
+      </div >
     </div>
 
     <div class="container footer">
@@ -19,7 +32,7 @@
 
           <input
             autofocus
-            placeholder="(max 117 characters)"
+            placeholder="(somewhat around 200 characters)"
             type="text"
             v-model="newMessage"
             v-on:keyup.13="sendMessage" />
