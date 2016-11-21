@@ -41,7 +41,7 @@
     <ol>
       <li>No one inbetween our computers can read our messages in real time (which would be impossible without signing an asymmetrical key-pair or trusting a middleman)</li>
       <li>No one can ever decrypt our messages in the future, even when they have all our web traffic secured and know our initial passphrase (thanks to an asymmetrical encryption)</li>
-      <li>You can be sure that 1op.eu is 1op.eu (thanks to a certificate signed by &quot;Let's Encrypt&quot; Certificate Authority - take a look at the green lock or <em>https://</em> in the address bar).</li>
+      <li>1op.eu is 1op.eu (thanks to a certificate signed by &quot;Let's Encrypt&quot; Certificate Authority - take a look at the green lock or <em>https://</em> in the address bar).</li>
     </ol>
 
     <h5>Whoa! How exactly does it work?</h5>
