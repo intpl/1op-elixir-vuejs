@@ -1,10 +1,9 @@
 <template>
-  <center>
-    <br />
+  <div id="loading">
     <img src="/static/konik.gif">
     <br />
     <h3>Loading...</h3>
-  </center>
+  </div>
 </template>
 
 <script>
@@ -13,4 +12,11 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+#loading {
+  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+</style>

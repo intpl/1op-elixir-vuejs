@@ -1,9 +1,17 @@
 <template>
   <div class="container" id="app">
     <logo></logo>
-    <loading v-if="!submitEntranceAllow"></loading>
-    <entrance v-if="!authorized" v-show="submitEntranceAllow"></entrance>
-    <chat v-if="authorized"></chat>
+    <transition name="fade">
+      <loading v-if="!submitEntranceAllow"></loading>
+    </transition>
+
+    <transition name="fade">
+      <entrance v-if="!authorized" v-show="submitEntranceAllow"></entrance>
+    </transition>
+
+    <transition name="fade">
+      <chat v-if="authorized"></chat>
+    </transition>
   </div>
 </template>
 
@@ -22,5 +30,12 @@ export default {
 </script>
 
 <style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .8s
+}
+.fade-enter, .fade-leave-active {
+  opacity: .1
+}
 @import 'assets/milligram.css'
+
 </style>

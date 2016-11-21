@@ -2,11 +2,13 @@
   <div>
     <div class="row chat">
       <div v-if="messages.length > 0" class="column column-70">
-        <blockquote v-for="message in messages">
-          {{ message.date.getHours() }}:{{ message.date.getMinutes()}}
-          <b>{{ message.user_id }}</b>:
-          <em>{{ message.body }}</em>
-        </blockquote>
+        <transition-group name="list">
+          <blockquote v-for="message in messages" v-bind:key="message">
+            {{ message.date.getHours() }}:{{ message.date.getMinutes()}}
+            <b>{{ message.user_id }}</b>:
+            <em>{{ message.body }}</em>
+          </blockquote>
+        </transition>
       </div>
       <div v-else>
         <br>
@@ -85,5 +87,13 @@ html, body {
 .footer{
     position: fixed;
     bottom: 0;
+}
+
+.list-enter-active, .list-leave-active {
+  transition: all 0.4s;
+}
+.list-enter, .list-leave-active {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
