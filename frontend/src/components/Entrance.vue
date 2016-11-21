@@ -1,7 +1,7 @@
 <template>
   <div>
     <br />
-    <form v-on:submit.prevent="SUBMIT_ENTRANCE_REQUEST($event.target)">
+    <form v-on:submit.prevent="submitEntranceRequest($event.target)">
       <div class="row">
         <div class="column column-100">
           <div v-if="!room_id">
@@ -60,7 +60,16 @@
   export default {
     name: 'entrance',
     computed: mapState(['room_id']),
-    methods: mapActions(['SUBMIT_ENTRANCE_REQUEST'])
+    methods: {
+      ...mapActions(['SUBMIT_ENTRANCE_REQUEST']),
+
+      submitEntranceRequest (target) {
+        const elements = target.getElementsByTagName('input')
+        for (let element of elements) { element.disabled = true }
+
+        this.SUBMIT_ENTRANCE_REQUEST(target)
+      }
+    }
   }
 </script>
 
