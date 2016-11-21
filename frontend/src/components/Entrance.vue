@@ -28,11 +28,11 @@
     </p>
     <h5>Alright, so what's the big deal?</h5>
     <p>
-      We can pretty much encrypt stuff using either symmetric or asymmetric algorithms. With symmetric encryption we only need a key passphrase to encrypt/decrypt a message. It's all more complicated when it comes to asymmetric encryption algorithms, where we have a Private and a Public key. Using a Private key we can encrypt a message, which can be decrypted using only the Public one, and vice-versa (Public-key-encrypted messages can be decrypted using only the Private key). That's pretty much how the Internet identity trust is built. We trust that Google is Google, because its identity is encrypted using some Key Authority's Private Key (which is securely stored somewhere far away) and we all have its Public key stored on our computers. We could use the same solution in instant messaging in order to prevent everybody inbetween our computers from seeing our messages.
+      We can pretty much encrypt stuff using either symmetric or asymmetric algorithms. With symmetric encryption we only need a key passphrase to encrypt/decrypt a message. It's all more complicated when it comes to asymmetric encryption algorithms, where we have a Private and a Public key. Using a Private key we can encrypt a message, which can be decrypted using only the Public one, and vice-versa (Public-key-encrypted messages can be decrypted using only the Private key). That's pretty much how the Internet identity trust is built. We trust that Google is Google, because its identity is encrypted using some Certificate Authority's Private Key (which is securely stored somewhere far away) and we all have its Public key stored on our computers. We could use the same solution in instant messaging in order to prevent everybody inbetween our computers from seeing our messages.
     </p>
     <p>... but why shouldn't we?</p>
     <p>
-      The Internet relies on certificates, which are signed by authorities, in which indentities we all trust. In order to gain that kind of signed certificate we have to pay a price to the authority and we won't be doing this for a simple chatroom. The only solution we have is to generate our own certificates. But we have to transfer them somehow between computers, and that is where a rogue middleman can come in to interfere. It's very easy for the middleman to fake secure connection when we rely only on an asymmetrical encryption protocol like RSA (the middleman can store our public key, generate its own key-pair and encrypt every message using its own key, and then resend a message encrypted by our own public key back to us without anyone noticing). What's the solution I would like to offer?
+      The Internet relies on certificates, which are signed by authorities, in which indentities we all trust. In order to gain that kind of signed certificate we have to pay a price to a Certificate Authority and we won't be doing this for a simple chatroom. The only solution we have is to generate our own certificates. But we have to transfer them somehow between computers, and that is where a rogue middleman can come in to interfere. It's very easy for the middleman to fake secure connection when we rely only on an asymmetrical encryption protocol like RSA (the middleman can store our public key, generate its own key-pair and encrypt every message using its own key, and then resend a message encrypted by our own public key back to us without anyone noticing). What's the solution I would like to offer?
     </p>
     <h5>Let's encrypt public keys using symmetric encryption!</h5>
     <p>
@@ -41,6 +41,7 @@
     <ol>
       <li>No one inbetween our computers can read our messages in real time (which would be impossible without signing an asymmetrical key-pair or trusting a middleman)</li>
       <li>No one can ever decrypt our messages in the future, even when they have all our web traffic secured and know our initial passphrase (thanks to an asymmetrical encryption)</li>
+      <li>You can be sure that 1op.eu is 1op.eu (thanks to a certificate signed by &quot;Let's Encrypt&quot; Certificate Authority - take a look at the green lock or <em>https://</em> in the address bar).</li>
     </ol>
 
     <h5>Whoa! How exactly does it work?</h5>

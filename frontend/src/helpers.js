@@ -8,7 +8,7 @@ export function roomIdFromHref () {
 }
 
 export function openSocket () {
-  const socket = new Socket('ws://ws.1op.eu/socket')
+  const socket = new Socket('wss://ws.1op.eu/socket')
   socket.connect()
   return socket
 }
