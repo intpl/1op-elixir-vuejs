@@ -7,7 +7,7 @@ defmodule Backend.RoomChannel do
   def join(room_id, %{"params" => %{"sha512" => sha512, "rsa_pub" => rsa_pub}}, socket) do
     room_id
       |> ets_lookup
-      |> verify_room(room_id, sha512)
+      |> sync_room(room_id, sha512)
       |> handle_response(room_id, rsa_pub, socket, self)
   end
 
@@ -50,16 +50,16 @@ defmodule Backend.RoomChannel do
 
   defp ets_lookup(room_id), do: :ets.lookup(:chatrooms, room_id)
 
-  defp verify_room([{room_id, sha512}], room_id, sha512), do: :ok
-  defp verify_room([], room_id, sha512) do
+  defp sync_room([{room_id, sha512}], room_id, sha512), do: :ok
+  defp sync_room([], room_id, sha512) do
     :ets.insert(:chatrooms, { room_id, sha512 })
     :ok
   end
 
-  defp verify_room(_, _, _), do: :error
+  defp sync_room(_, _, _), do: :error
 
-  defp handle_response(:ok, room_id, rsa_pub, socket, that) do
-    send that, {:after_join, room_id, rsa_pub}
+  defp handle_response(:ok, room_id, rsa_pub, socket, join_socket) do
+    send join_socket, {:after_join, room_id, rsa_pub}
     {:ok, socket}
   end
 
