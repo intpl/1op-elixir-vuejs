@@ -58,8 +58,8 @@ defmodule Backend.RoomChannel do
 
   defp sync_room(_, _, _), do: :error
 
-  defp handle_response(:ok, room_id, rsa_pub, socket, join_socket) do
-    send join_socket, {:after_join, room_id, rsa_pub}
+  defp handle_response(:ok, room_id, rsa_pub, socket, join_self) do
+    send join_self, {:after_join, room_id, rsa_pub}
     {:ok, socket}
   end
 
