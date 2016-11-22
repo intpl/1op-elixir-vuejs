@@ -17,7 +17,7 @@ const state = {
   password: '',
   error: '',
   authorized: false,
-  submitEntranceAllow: true,
+  allowEntranceSubmit: true,
   room_id: roomIdFromHref(),
   messages: [],
   users: [],
@@ -76,11 +76,11 @@ const mutations = {
   },
 
   ALLOW_SUBMIT_ENTRANCE (state) {
-    state.submitEntranceAllow = true
+    state.allowEntranceSubmit = true
   },
 
   BLOCK_SUBMIT_ENTRANCE (state) {
-    state.submitEntranceAllow = false
+    state.allowEntranceSubmit = false
   }
 }
 
@@ -160,12 +160,14 @@ const actions = {
   },
 
   async SUBMIT_ENTRANCE_REQUEST ({dispatch, commit}, form) {
-    commit('BLOCK_SUBMIT_ENTRANCE')
-
     await dispatch('REQUEST_ENTRANCE', {
       room_id: (form.roomIdField || {}).value || roomIdFromHref(),
       password: form.passwordField.value
     })
+  },
+
+  BLOCK_SUBMIT_ENTRANCE ({commit}) {
+    commit('BLOCK_SUBMIT_ENTRANCE')
   }
 }
 

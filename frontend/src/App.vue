@@ -2,11 +2,11 @@
   <div class="container" id="app">
     <logo></logo>
     <transition name="fade">
-      <loading v-if="!submitEntranceAllow"></loading>
+      <loading v-if="!allowEntranceSubmit"></loading>
     </transition>
 
     <transition name="fade">
-      <entrance v-if="!authorized" v-show="submitEntranceAllow"></entrance>
+      <entrance v-if="!authorized" v-show="allowEntranceSubmit"></entrance>
     </transition>
 
     <transition name="fade">
@@ -25,7 +25,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'app',
   components: { Entrance, Logo, Chat, Loading },
-  computed: mapState(['authorized', 'submitEntranceAllow'])
+  computed: mapState(['authorized', 'allowEntranceSubmit'])
 }
 </script>
 

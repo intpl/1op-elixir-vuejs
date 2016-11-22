@@ -6,15 +6,15 @@
         <div class="column column-100">
           <div v-if="!room_id">
             <label for="r">Your desired room id ( 1op.eu/... )</label>
-            <input name="roomIdField" id="r" type="text" placeholder="room id, eg. asdasdasd">
+            <input :disabled="!allowEntranceSubmit" name="roomIdField" id="r" type="text" placeholder="room id, eg. asdasdasd">
           </div>
 
           <label for="p">Your secret password (it will get lost if you refresh the site*)</label>
-          <input name="passwordField" id="p" type="password" placeholder="Enter your password..."/>
+          <input :disabled="!allowEntranceSubmit" name="passwordField" id="p" type="password" placeholder="Enter your password..."/>
           <small> * - so don't hit refresh after entering the chatroom </small>
 
           <center>
-            <input class="button-outline" type="submit">
+            <input :disabled="!allowEntranceSubmit" class="button-outline" type="submit">
           </center>
         </div>
       </div>
@@ -59,15 +59,16 @@
 
   export default {
     name: 'entrance',
-    computed: mapState(['room_id']),
+    computed: mapState(['room_id', 'allowEntranceSubmit']),
     methods: {
-      ...mapActions(['SUBMIT_ENTRANCE_REQUEST']),
+      ...mapActions(['SUBMIT_ENTRANCE_REQUEST', 'BLOCK_SUBMIT_ENTRANCE']),
 
       submitEntranceRequest (target) {
-        const elements = target.getElementsByTagName('input')
-        for (let element of elements) { element.disabled = true }
-
-        this.SUBMIT_ENTRANCE_REQUEST(target)
+        // hack to handle submitting form multiple times.
+        this.BLOCK_SUBMIT_ENTRANCE()
+        setTimeout(() => {
+          this.SUBMIT_ENTRANCE_REQUEST(target)
+        }, 1)
       }
     }
   }
