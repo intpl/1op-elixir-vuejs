@@ -2,6 +2,8 @@ defmodule Backend.RoomChannel do
   use Backend.Web, :channel
   alias Backend.Presence
 
+@hex_chars "0123456789abcdef" |> String.split("")
+
   intercept ["new_msg"]
 
   def join(room_id, %{"params" => %{"sha512" => sha512, "rsa_pub" => rsa_pub}}, socket) do
@@ -18,34 +20,37 @@ defmodule Backend.RoomChannel do
   end
 
   def handle_info({:after_join, _, rsa_pub}, socket) do
-    socket = assign(socket, :user_id, generate_user_id)
-    push socket, "presence_state", Presence.list(socket)
+    presence_list = Presence.list(socket)
+    socket = assign(socket, :user_color, generate_random_color)
+    push socket, "presence_state", presence_list
 
     {:ok, _} = Presence.track( socket, socket.id, %{
-                                user_id: socket.assigns[:user_id],
+                                user_color: socket.assigns[:user_color],
                                 rsa_pub: rsa_pub
                               })
     {:noreply, socket}
   end
 
-	def handle_in("new_msg", %{"body" => body}, socket) do
+	def handle_in("new_msg", params, socket) do
     broadcast! socket, "new_msg",
-      %{body: body, sender_id: socket.assigns[:user_id]}
+      %{body: params["body"], sender_color: socket.assigns[:user_color]}
 
     {:noreply, socket}
   end
 
-  def handle_out("new_msg", %{body: body, sender_id: sender_id}, socket) do
-    user_id = socket.assigns[:user_id]
+  def handle_out("new_msg", %{body: body, sender_color: sender_color}, socket) do
+    user_color = socket.assigns[:user_color]
 
-    [ _ | [ message ] ] = Enum.find(body, fn([user | _]) -> user == user_id end)
+    [ _ | [ message ] ] = Enum.find(body, fn([user | _]) -> user == user_color end)
 
-    push socket, "new_msg", %{body: [sender_id, message]}
+    push socket, "new_msg", %{body: [sender_color, message]}
     {:noreply, socket}
   end
 
-  defp generate_user_id do
-    "user_" <> (:crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5))
+  defp generate_random_color do
+		Enum.reduce((1..6), [], fn (_i, acc) ->
+      [Enum.random(@hex_chars) | acc]
+    end) |> Enum.join("")
   end
 
   defp ets_lookup(room_id), do: :ets.lookup(:chatrooms, room_id)

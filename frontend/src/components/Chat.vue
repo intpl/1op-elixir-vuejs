@@ -3,11 +3,17 @@
     <div class="row chat">
       <div v-if="messages.length > 0" class="column column-70">
         <transition-group name="list">
-          <blockquote v-for="message in messages" v-bind:key="message">
-            {{ message.date.getHours() }}:{{ message.date.getMinutes()}}
-            <b>{{ message.user_id }}</b>:
+          <div v-for="message in messages"
+            :key="message"
+            :style="parseColor(message.user_color)"
+             class="message">
+
+            <div class="time_block">
+							{{ parseTime(message.date) }}
+            </div>
+
             <em>{{ message.body }}</em>
-          </blockquote>
+          </div>
         </transition>
       </div>
       <div v-else>
@@ -27,10 +33,7 @@
 
     <div class="container footer">
       <div class="row">
-        <div class="column column-100">
-
-          online:
-          <b v-for="u in users"> {{ u.user_id }} </b>
+          {{ displayUserLength(users) }}
 
           <input
             autofocus
@@ -38,8 +41,6 @@
             type="text"
             v-model="newMessage"
             v-on:keyup.13="sendMessage" />
-
-        </div>
       </div>
     </div>
   </div>
@@ -58,6 +59,28 @@ export default {
 
   methods: {
     ...mapActions(['SEND_MESSAGE']),
+
+    parseColor (color) {
+      const bigint = parseInt(color, 16)
+      const r = (bigint >> 16) & 255
+      const g = (bigint >> 8) & 255
+      const b = bigint & 255
+
+      return {
+        'border-color': ('#' + color),
+        'background-color': `rgba(${r}, ${g}, ${b}, 0.1)`
+      }
+    },
+
+    parseTime (date) {
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2)
+    },
+
+    displayUserLength (users) {
+      return `online: ${users.length}`
+    },
 
     sendMessage () {
       this.SEND_MESSAGE(this.newMessage)
@@ -85,8 +108,11 @@ html, body {
 }
 
 .footer{
-    position: fixed;
-    bottom: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 
 .list-enter-active, .list-leave-active {
@@ -95,5 +121,19 @@ html, body {
 .list-enter, .list-leave-active {
   opacity: 0;
   transform: translateY(30px);
+}
+
+.message {
+  color: #000;
+	margin: 10px;
+  padding: 10px;
+  border-left: 10px solid;
+  border-radius: 5px;
+}
+
+.message > .time_block {
+  display: inline-block;
+  float: right;
+  color: #aaa;
 }
 </style>

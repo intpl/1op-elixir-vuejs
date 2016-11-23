@@ -51,7 +51,7 @@ const mutations = {
 
   RECEIVE_MESSAGE (state, message) {
     state.messages.push({
-      user_id: message.body[0],
+      user_color: message.body[0],
       body: state.rsa.decrypt(message.body[1]),
       date: new Date()
     })
@@ -67,7 +67,7 @@ const mutations = {
   UPDATE_USERS (state, users) {
     state.users = users.map((el) => {
       return {
-        user_id: el.user_id,
+        user_color: el.user_color,
         rsa_pub: AES.decrypt(
           el.rsa_pub, state.password
         ).toString(CryptoEnc.Utf8)
@@ -151,7 +151,7 @@ const actions = {
       encrypt.setPublicKey(user.rsa_pub)
 
       return [
-        user.user_id,
+        user.user_color,
         encrypt.encrypt(message)
       ]
     })
