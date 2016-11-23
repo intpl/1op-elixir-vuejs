@@ -36,6 +36,7 @@ export default {
 .fade-enter, .fade-leave-active {
   opacity: .1
 }
+
 @import 'assets/milligram.css'
 
 </style>

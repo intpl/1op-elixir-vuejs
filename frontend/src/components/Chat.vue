@@ -33,14 +33,17 @@
 
     <div class="container footer">
       <div class="row">
-          {{ displayUserLength(users) }}
+        <div class="user_count">
+          users online: <b>{{ users.length }}</b>
+        </div>
 
-          <input
-            autofocus
-            placeholder="(somewhat around 200 characters)"
-            type="text"
-            v-model="newMessage"
-            v-on:keyup.13="sendMessage" />
+        <input
+          maxlength="240"
+          autofocus
+          placeholder="(240 characters. Enter sends)"
+          type="text"
+          v-model="newMessage"
+          v-on:keyup.13="sendMessage" />
       </div>
     </div>
   </div>
@@ -76,10 +79,6 @@ export default {
       const hours = date.getHours()
       const minutes = date.getMinutes()
       return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2)
-    },
-
-    displayUserLength (users) {
-      return `online: ${users.length}`
     },
 
     sendMessage () {
@@ -124,11 +123,20 @@ html, body {
 }
 
 .message {
-  color: #000;
+  color: #333;
 	margin: 10px;
   padding: 10px;
   border-left: 10px solid;
   border-radius: 5px;
+  word-wrap: break-word;
+  -webkit-box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
+  -moz-box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
+  box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
+}
+
+.user_count {
+  padding: 10px;
+  white-space: nowrap;
 }
 
 .message > .time_block {

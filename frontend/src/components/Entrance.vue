@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="entrance">
     <br />
     <form v-on:submit.prevent="submitEntranceRequest($event.target)">
       <div class="row">
@@ -74,4 +74,17 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+@media screen and (min-width: 1350px) {
+  .entrance {
+    padding: 0px 300px 0px 300px;
+  }
+}
+.entrance > form {
+	border: 1px solid #0c0;
+  padding: 20px;
+  -webkit-box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
+  -moz-box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
+  box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
+}
+</style>
