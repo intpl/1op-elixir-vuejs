@@ -121,7 +121,7 @@ const actions = {
     channel.on('new_msg', payload => {
       commit('RECEIVE_MESSAGE', payload)
 
-      window.scrollTo(0, document.body.scrollHeight)
+      dispatch('SCROLL_TO_BOTTOM')
     })
 
     channel.on('presence_state', initial => {
@@ -169,6 +169,10 @@ const actions = {
 
   BLOCK_SUBMIT_ENTRANCE ({commit}) {
     commit('BLOCK_SUBMIT_ENTRANCE')
+  },
+
+  SCROLL_TO_BOTTOM () {
+    window.scrollTo(0, document.body.scrollHeight)
   }
 }
 
