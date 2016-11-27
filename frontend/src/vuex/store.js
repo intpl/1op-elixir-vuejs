@@ -19,6 +19,7 @@ const state = {
   authorized: false,
   allowEntranceSubmit: true,
   room_id: roomIdFromHref(),
+  initialWindowTitle: document.title,
   messages: [],
   users: [],
   presence: {}
@@ -78,6 +79,10 @@ const mutations = {
 
   BLOCK_SUBMIT_ENTRANCE (state) {
     state.allowEntranceSubmit = false
+  },
+
+  WINDOW_FOCUSED (state, boolean) {
+    state.windowFocused = boolean
   }
 }
 
@@ -109,6 +114,7 @@ const actions = {
         commit('SAVE_CHANNEL', channel)
 
         dispatch('HOOK_CHANNEL', channel)
+        dispatch('HOOK_BODY_FOCUS_ACTIONS')
         dispatch('SYNC_HREF_WITH_ROOM_ID')
       }).receive('error', (res) => {
         commit('DISCONNECTED', res['reason'])
@@ -120,7 +126,7 @@ const actions = {
   HOOK_CHANNEL ({state, dispatch, commit}, channel) {
     channel.on('new_msg', payload => {
       commit('RECEIVE_MESSAGE', payload)
-
+      dispatch('NOTIFY_USER_IF_NECCESSARY')
       dispatch('SCROLL_TO_BOTTOM')
     })
 
@@ -173,6 +179,20 @@ const actions = {
 
   SCROLL_TO_BOTTOM () {
     window.scrollTo(0, document.body.scrollHeight)
+  },
+
+  HOOK_BODY_FOCUS_ACTIONS ({state, commit}) {
+    window.addEventListener('blur', () => commit('WINDOW_FOCUSED', false))
+    window.addEventListener('focus', () => {
+      document.title = state.initialWindowTitle
+      commit('WINDOW_FOCUSED', true)
+    })
+  },
+
+  NOTIFY_USER_IF_NECCESSARY ({state}) {
+    if (state.windowFocused === false) {
+      document.title = '(*) ' + state.initialWindowTitle
+    }
   }
 }
 
