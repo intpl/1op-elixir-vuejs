@@ -55,9 +55,6 @@ const mutations = {
       body: state.rsa.decrypt(message.body[1]),
       date: new Date()
     })
-
-    // aAaAA this shouldn't be in a commit! SORRY! :<<<
-    document.body.scrollTop = document.body.scrollHeight - 200
   },
 
   UPDATE_PRESENCE (state, presence) {
@@ -121,7 +118,11 @@ const actions = {
   },
 
   HOOK_CHANNEL ({state, dispatch, commit}, channel) {
-    channel.on('new_msg', payload => commit('RECEIVE_MESSAGE', payload))
+    channel.on('new_msg', payload => {
+      commit('RECEIVE_MESSAGE', payload)
+
+      window.scrollTo(0, document.body.scrollHeight)
+    })
 
     channel.on('presence_state', initial => {
       dispatch('UPDATE_PRESENCE', Presence.syncState(state.presence, initial))
