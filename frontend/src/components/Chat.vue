@@ -9,24 +9,24 @@
              class="message">
 
             <div class="time_block">
-							{{ parseTime(message.date) }}
+              {{ parseTime(message.date) }}
             </div>
 
             <em>{{ message.body }}</em>
           </div>
-        </transition>
+        </transition-group>
       </div>
       <div v-else>
         <br>
         <br>
-        <br>
-        Write something! Don't be shy!
-        <br>
         <div v-if="users.length == 1">
-          ... and invite somebody, maybe? :)
+          Invite somebody by sending them a link to this page. Remember to tell them what's the password. Otherwise, they won't be albe to connect.
+          <br> <br>
+          Keep in mind that users won't be able to see messeges sent while they were gone.
         </div>
         <div v-else>
-          <b>Oh! Somebody is here!</b> Write something!
+          <br>
+          <b>Oh! Somebody is here!</b> Write something, quickly! :)
         </div>
       </div >
     </div>
@@ -90,20 +90,16 @@ export default {
 </script>
 
 <style scoped>
-.input {
-  clear: both;
-  position: relative;
-  z-index: 10;
-  height: 3em;
-  margin-top: -3em;
+input {
+  color: #fff;
 }
 
 html, body {
-  height: 100%
+  height: 100%;
 }
 
 .chat {
-  padding-bottom: 200px;
+  margin-bottom: 100px;
 }
 
 .footer{
@@ -123,15 +119,12 @@ html, body {
 }
 
 .message {
-  color: #333;
-	margin: 10px;
-  padding: 10px;
+  color: #eee;
+  margin: 10px;
+  padding: 13px;
   border-left: 10px solid;
   border-radius: 5px;
   word-wrap: break-word;
-  -webkit-box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
-  -moz-box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
-  box-shadow: 0px 0px 16px -5px rgba(0,0,0,0.57);
 }
 
 .user_count {
@@ -142,6 +135,6 @@ html, body {
 .message > .time_block {
   display: inline-block;
   float: right;
-  color: #aaa;
+  color: #888;
 }
 </style>

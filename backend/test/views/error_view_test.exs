@@ -6,16 +6,16 @@ defmodule Backend.ErrorViewTest do
 
   test "renders 404.json" do
     assert render(Backend.ErrorView, "404.json", []) ==
-           %{errors: %{detail: "Page not found"}}
+           %{errors: ['page not found']}
   end
 
   test "render 500.json" do
     assert render(Backend.ErrorView, "500.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: ['page not found']}
   end
 
   test "render any other" do
     assert render(Backend.ErrorView, "505.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: ['page not found']}
   end
 end

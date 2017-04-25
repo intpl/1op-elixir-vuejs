@@ -30,13 +30,23 @@ export default {
 </script>
 
 <style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .8s
-}
-.fade-enter, .fade-leave-active {
-  opacity: .1
-}
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .8s
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: .1
+  }
 
-@import 'assets/milligram.css'
+  body {
+    background-color: #101010;
+    color: #999;
+  }
 
+  @media screen and (min-width: 1350px) {
+    .container {
+      padding: 0px 300px 0px 300px;
+    }
+  }
+
+  @import 'assets/milligram.css'
 </style>

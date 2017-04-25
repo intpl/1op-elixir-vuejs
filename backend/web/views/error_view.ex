@@ -2,11 +2,11 @@ defmodule Backend.ErrorView do
   use Backend.Web, :view
 
   def render("404.json", _assigns) do
-    %{errors: %{detail: "Page not found"}}
+    %{errors: ['page not found']}
   end
 
   def render("500.json", _assigns) do
-    %{errors: %{detail: "Internal server error"}}
+    %{errors: ['page not found']}
   end
 
   # In case no render clause matches or no

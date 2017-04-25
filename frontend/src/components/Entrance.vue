@@ -2,22 +2,20 @@
   <div class="entrance">
     <br />
     <form v-on:submit.prevent="submitEntranceRequest($event.target)">
-      <div class="row">
-        <div class="column column-100">
-          <div v-if="!room_id">
-            <label for="r">Your desired room id ( 1op.eu/... )</label>
-            <input :disabled="!allowEntranceSubmit" name="roomIdField" id="r" type="text" placeholder="room id, eg. asdasdasd">
-          </div>
+      <fieldset>
+        <span v-if="!room_id">
+          <label for="r">Your desired room id ( 1op.eu/... )</label>
+          <input :disabled="!allowEntranceSubmit" name="roomIdField" id="r" type="text" placeholder="room id, eg. asdasdasd">
+        </span>
 
-          <label for="p">Your secret password (it will get lost if you refresh the site*)</label>
-          <input :disabled="!allowEntranceSubmit" name="passwordField" id="p" type="password" placeholder="Enter your password..."/>
-          <small> * - so don't hit refresh after entering the chatroom </small>
+        <label for="p">Your secret password (it will get lost if you refresh the site*)</label>
+        <input :disabled="!allowEntranceSubmit" name="passwordField" id="p" type="password" placeholder="Enter your password..."/>
+        <small> * - so don't hit refresh after entering the chatroom </small>
 
-          <center>
-            <input :disabled="!allowEntranceSubmit" class="button-outline" type="submit">
-          </center>
-        </div>
-      </div>
+        <center>
+          <input :disabled="!allowEntranceSubmit" type="submit">
+        </center>
+      </fieldset>
     </form>
     <p>
     You just send a link and a password to a friend. You don't have to set up a chatroom before sending the link, so just write <em>1op.eu/your_room</em> and send it right away. If both of you have the same password, you will get connected and no one will ever see what you have been talking about. There is no limit when it comes to people connected to a chat room (they all have to know the firstly-connected user's password). You can share only text messages.
@@ -64,27 +62,24 @@
       ...mapActions(['SUBMIT_ENTRANCE_REQUEST', 'BLOCK_SUBMIT_ENTRANCE']),
 
       submitEntranceRequest (target) {
-        // hack to handle submitting form multiple times.
         this.BLOCK_SUBMIT_ENTRANCE()
         setTimeout(() => {
           this.SUBMIT_ENTRANCE_REQUEST(target)
-        }, 1)
+        }, 100)
       }
     }
   }
 </script>
 
-<style scoped>
-@media screen and (min-width: 1350px) {
-  .entrance {
-    padding: 0px 300px 0px 300px;
+<style lang="scss" scoped>
+  .entrance > form {
+    background-color: #171717;
+    border: 1px solid #444;
+    padding: 20px;
+
+    input {
+      background-color: transparent;
+      border-color: #444;
+    }
   }
-}
-.entrance > form {
-	border: 1px solid #0c0;
-  padding: 20px;
-  -webkit-box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
-  -moz-box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
-  box-shadow: 0px 0px 33px -7px rgba(0,0,0,0.57);
-}
 </style>
