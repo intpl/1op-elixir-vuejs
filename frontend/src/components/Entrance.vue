@@ -80,6 +80,7 @@
     input {
       background-color: transparent;
       border-color: #444;
+      color: #fff;
     }
   }
 </style>
