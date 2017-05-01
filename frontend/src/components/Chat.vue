@@ -20,7 +20,7 @@
         <br>
         <br>
         <div v-if="users.length == 1">
-          Invite somebody by sending them a link to this page. Remember to tell them what's the password. Otherwise, they won't be albe to connect.
+          Invite somebody by sending them a link to this page. Remember to tell them what's the password. Otherwise, they won't be able to connect.
           <br> <br>
           Keep in mind that users won't be able to see messeges sent while they were gone.
         </div>
